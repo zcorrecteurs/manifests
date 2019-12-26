@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:98294c1c2fb821e877ea38d94455033c0f86f1f0
+        image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:ca606fc19048bedfadc3ed2dc3ed31cc079eed28
         env:
         - name: DATABASE_HOST
           value: sqlcorrigraphie.mysql.database.azure.com
@@ -43,6 +43,8 @@ spec:
             secretKeyRef:
               name: sendgrid
               key: apiKey
+        - name: SPHINX_HOST
+          value: sphinx
         ports:
         - containerPort: 80
         resources:
