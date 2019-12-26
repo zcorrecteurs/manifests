@@ -1,0 +1,73 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: traefik
+  namespace: default
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: server
+        image: traefik:v2.1
+        ports:
+        - name: http
+          containerPort: 80
+        - name: admin
+          containerPort: 8080
+        args:
+        - --api
+        - --accesslog
+        - --entrypoints.web.Address=:80
+        - --providers.kubernetesIngress
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: traefik-ingress
+  namespace: default
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: network-rg
+spec:
+  selector:
+    app: traefik
+  type: LoadBalancer
+  loadBalancerIP: 20.40.145.98
+  ports:
+    - protocol: TCP
+      port: 80
+      name: http
+--
+kind: Service
+apiVersion: v1
+metadata:
+  name: traefik-admin
+spec:
+  selector:
+    app: traefik
+  ports:
+    - protocol: TCP
+      name: admin
+      port: 8080
+---
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#  name: traefik-admin
+#spec:
+#  rules:
+#  - host: traefik.lb.corrigraphie.net
+#    http:
+#      paths:
+#      - backend:
+#          serviceName: traefik-admin
+#          servicePort: 8080
