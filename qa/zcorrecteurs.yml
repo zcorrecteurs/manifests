@@ -18,16 +18,12 @@ spec:
     spec:
       containers:
       - name: server
-        image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:ca606fc19048bedfadc3ed2dc3ed31cc079eed28
+        image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:c7e27be39ba8368d5e779b653dc29d300b01b424
         env:
         - name: DATABASE_HOST
           value: sqlcorrigraphie.mysql.database.azure.com
         - name: DATABASE_BASE
           value: zco_dev
-        #- name: SYMFONY_DEBUG
-        #  value: "yes"
-        #- name: SYMFONY_ENVIRONMENT
-        #  value: dev
         - name: DATABASE_USER
           valueFrom:
             secretKeyRef:
@@ -43,6 +39,11 @@ spec:
             secretKeyRef:
               name: sendgrid
               key: apiKey
+        - name: AZURE_BLOB_DSN
+          valueFrom:
+            secretKeyRef:
+              name: blob
+              key: connectionString
         - name: SPHINX_HOST
           value: sphinx
         ports:
@@ -83,3 +84,97 @@ spec:
       - backend:
           serviceName: zcorrecteurs
           servicePort: 80
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hourly-cron
+  namespace: zcorrecteurs-qa
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: console
+            image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:c7e27be39ba8368d5e779b653dc29d300b01b424
+            args:
+            - console
+            - zco:cron
+            - --hourly
+            env:
+            - name: DATABASE_HOST
+              value: sqlcorrigraphie.mysql.database.azure.com
+            - name: DATABASE_BASE
+              value: zco_dev
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: user
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: password
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sendgrid
+                  key: apiKey
+            - name: AZURE_BLOB_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: blob
+                  key: connectionString
+            - name: SPHINX_HOST
+              value: sphinx
+          restartPolicy: Never
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: daily-cron
+  namespace: zcorrecteurs-qa
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: console
+            image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:c7e27be39ba8368d5e779b653dc29d300b01b424
+            args:
+            - console
+            - zco:cron
+            - --daily
+            env:
+            - name: DATABASE_HOST
+              value: sqlcorrigraphie.mysql.database.azure.com
+            - name: DATABASE_BASE
+              value: zco_dev
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: user
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql
+                  key: password
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sendgrid
+                  key: apiKey
+            - name: AZURE_BLOB_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: blob
+                  key: connectionString
+            - name: SPHINX_HOST
+              value: sphinx
+          restartPolicy: Never
