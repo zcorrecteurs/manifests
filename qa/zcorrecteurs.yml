@@ -46,6 +46,8 @@ spec:
               key: connectionString
         - name: SPHINX_HOST
           value: sphinx
+        - name: SENTRY_DSN
+          value: https://2515611307de4eb6ab651f6846988ee0@sentry.io/1359364
         ports:
         - containerPort: 80
         resources:
@@ -130,6 +132,8 @@ spec:
                   key: connectionString
             - name: SPHINX_HOST
               value: sphinx
+            - name: SENTRY_DSN
+              value: https://2515611307de4eb6ab651f6846988ee0@sentry.io/1359364
           restartPolicy: Never
 ---
 apiVersion: batch/v1beta1
@@ -177,4 +181,6 @@ spec:
                   key: connectionString
             - name: SPHINX_HOST
               value: sphinx
+            - name: SENTRY_DSN
+              value: https://2515611307de4eb6ab651f6846988ee0@sentry.io/1359364
           restartPolicy: Never
