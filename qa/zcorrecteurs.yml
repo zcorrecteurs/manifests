@@ -48,6 +48,8 @@ spec:
           value: sphinx
         - name: SENTRY_DSN
           value: https://2515611307de4eb6ab651f6846988ee0@sentry.io/1359364
+        - name: SENTRY_ENVIRONMENT
+          value: staging
         ports:
         - containerPort: 80
         resources:
@@ -134,6 +136,8 @@ spec:
               value: sphinx
             - name: SENTRY_DSN
               value: https://2515611307de4eb6ab651f6846988ee0@sentry.io/1359364
+            - name: SENTRY_ENVIRONMENT
+              value: staging
           restartPolicy: Never
 ---
 apiVersion: batch/v1beta1
@@ -183,4 +187,6 @@ spec:
               value: sphinx
             - name: SENTRY_DSN
               value: https://2515611307de4eb6ab651f6846988ee0@sentry.io/1359364
+            - name: SENTRY_ENVIRONMENT
+              value: staging
           restartPolicy: Never
