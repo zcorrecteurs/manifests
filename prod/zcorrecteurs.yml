@@ -82,12 +82,6 @@ metadata:
   namespace: zcorrecteurs-prod
 spec:
   rules:
-  - host: zcorrecteurs-prod.lb.corrigraphie.net
-    http:
-      paths:
-      - backend:
-          serviceName: zcorrecteurs
-          servicePort: 80
   - host: zcorrecteurs.fr
     http:
       paths:
