@@ -94,6 +94,12 @@ spec:
       - backend:
           serviceName: zcorrecteurs
           servicePort: 80
+  - host: www.zcorrecteurs.fr
+    http:
+      paths:
+      - backend:
+          serviceName: zcorrecteurs
+          servicePort: 80
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
