@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: memcached
+  namespace: zcorrecteurs-prod
+  labels:
+    app: memcached
+spec:
+  selector:
+    matchLabels:
+      app: memcached
+  serviceName: memcached
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: memcached
+    spec:
+      securityContext:
+        fsGroup: 1001
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app: memcached
+      containers:
+      - name: server
+        image: memcached:1.5.20
+        securityContext:
+          runAsUser: 1001
+        command:
+        - memcached
+        # Max quantity of memory to use (in MB) to store objects
+        - -m 64
+        - -o
+        - modern
+        - -v
+        ports:
+        - name: memcached
+          containerPort: 11211
+        livenessProbe:
+          tcpSocket:
+            port: memcached
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: memcached
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+  updateStrategy:
+    type: RollingUpdate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached
+  namespace: zcorrecteurs-prod
+  labels:
+    app: memcached
+spec:
+  clusterIP: None
+  ports:
+  - name: memcached
+    port: 11211
+    targetPort: memcached
+  selector:
+    app: memcached
