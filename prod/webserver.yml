@@ -75,26 +75,6 @@ spec:
     protocol: TCP
     port: 80
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: zcorrecteurs
-  namespace: zcorrecteurs-prod
-spec:
-  rules:
-  - host: zcorrecteurs.fr
-    http:
-      paths:
-      - backend:
-          serviceName: zcorrecteurs
-          servicePort: 80
-  - host: www.zcorrecteurs.fr
-    http:
-      paths:
-      - backend:
-          serviceName: zcorrecteurs
-          servicePort: 80
----
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

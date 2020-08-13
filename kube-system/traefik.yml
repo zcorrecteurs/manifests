@@ -71,14 +71,38 @@ spec:
       - name: server
         image: traefik:v2.1
         ports:
-        - name: http
-          containerPort: 80
-        - name: admin
-          containerPort: 8080
+          - name: web
+            containerPort: 80
+          - name: admin
+            containerPort: 8080
+          - name: secure
+            containerPort: 443
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: admin
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: admin
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
         args:
+        - --entrypoints.web.address=:80
+        - --entrypoints.secure.address=:443
         - --api
+        - --api.dashboard
+        - --api.insecure
         - --accesslog
-        - --entrypoints.web.Address=:80
+        - --ping
         - --providers.kubernetesIngress
 ---
 kind: Service
@@ -96,7 +120,10 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      name: http
+      name: web
+    - protocol: TCP
+      port: 443
+      name: secure
 ---
 kind: Service
 apiVersion: v1
