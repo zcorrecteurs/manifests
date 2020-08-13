@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:9e062ba6d887ffc1407b786a791b7c30c2e0ce01
+        image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:7b545dfc1b8301630ff5f3e8f06f2f643290f294
         env:
         - name: DATABASE_HOST
           value: sqlcorrigraphie.mysql.database.azure.com
@@ -88,7 +88,7 @@ spec:
         spec:
           containers:
           - name: console
-            image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:9e062ba6d887ffc1407b786a791b7c30c2e0ce01
+            image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:7b545dfc1b8301630ff5f3e8f06f2f643290f294
             args:
             - console
             - zco:cron
@@ -139,7 +139,7 @@ spec:
         spec:
           containers:
           - name: console
-            image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:9e062ba6d887ffc1407b786a791b7c30c2e0ce01
+            image: docker.pkg.github.com/zcorrecteurs/zcorrecteurs/webserver:7b545dfc1b8301630ff5f3e8f06f2f643290f294
             args:
             - console
             - zco:cron
